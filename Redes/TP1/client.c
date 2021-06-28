@@ -14,10 +14,11 @@ void usage(int argc, char **argv) {
 	printf("example: %s 127.0.0.1 51511\n", argv[0]);
 	exit(EXIT_FAILURE);
 }
-
+/*
 void teste(){
 	printf("teste");
 }
+*/
 
 #define BUFSZ 1024
 
