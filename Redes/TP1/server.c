@@ -54,13 +54,13 @@ int getOperationType(char **buf){
 
 
 
-void checkIsValidAndIsSaved(int clientSocket , Location location, Location locations[]){
+int checkIsValidAndIsSaved(int clientSocket , Location location, Location locations[]){
 
     char buffer[BUFFER_SIZE];
 
     int isValid = checkIfLocationIsValid(location);
     
-    if(isValid == 0){
+    if(!isValid){
         //muydar dps pra sprintf
         //envio da mensagem em buffer
         sprintf(buffer,"invalid location");
@@ -68,12 +68,13 @@ void checkIsValidAndIsSaved(int clientSocket , Location location, Location locat
         printf("%p\n",&buffer);
         //send message function em common ...
         sendMessageToClient(clientSocket,buffer);
-        
+
+        return 0;
     }
     
     int isSaved = checkIfLocationIsSaved(location,locations);
 
-    if(isSaved == 0){
+    if(!isSaved) {
         //mudar dps pra sprintf
         //envio da mensagem em buffer
         sprintf(buffer,"%d  %d  already exists\n", location.x ,location.y);
@@ -81,10 +82,10 @@ void checkIsValidAndIsSaved(int clientSocket , Location location, Location locat
         //send message function em common ...
         printf("%p\n",&buffer);
         //sendMessageToClient(clientSocket,buffer);
+        return 0;
     }
 
-    
-
+    return 1;
 }
 
 
@@ -96,7 +97,9 @@ void addLocation(int clientSocket , Location locationToAdd, Location locations[]
 
     char buffer[BUFFER_SIZE];
     
-    checkIsValidAndIsSaved(clientSocket,locationToAdd,locations);
+    if (!checkIsValidAndIsSaved(clientSocket,locationToAdd,locations)) {
+        return;
+    }
 
     int indexOfLocationToAdd = getLocationIndex(locationToAdd,locations);  
     
