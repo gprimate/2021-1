@@ -10,8 +10,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#define BUFSZ 1024
-
 
 void usage(int argc, char **argv) {
     printf("usage: %s <v4|v6> <server port>\n", argv[0]);
@@ -23,7 +21,7 @@ void usage(int argc, char **argv) {
 
 // RECEBER O TIPO DE OPERAÇAO E 
 //TRATAR SE ESTA VALIDA OU INVALIDA E RETORNAR O TIPO DA OPERAÇAO
-int getOperationType(char **buf){
+int getOperationType(char *buf){
     /*
     int i=0;
     char aux[10];
@@ -195,8 +193,8 @@ int main(int argc, char **argv) {
     }
 
     // log espera de conexões
-    char addrstr[BUFSZ];
-    addrtostr(addr, addrstr, BUFSZ);
+    char addrstr[BUFFER_SIZE];
+    addrtostr(addr, addrstr, BUFFER_SIZE);
     printf("bound to %s, waiting connections\n", addrstr);
 
 
@@ -215,13 +213,13 @@ int main(int argc, char **argv) {
         }
         
         //log conexao cliente
-        char caddrstr[BUFSZ];
-        addrtostr(caddr, caddrstr, BUFSZ);
+        char caddrstr[BUFFER_SIZE];
+        addrtostr(caddr, caddrstr, BUFFER_SIZE);
         printf("[log] connection from %s\n", caddrstr);
 
-        char buf[BUFSZ];
-        memset(buf, 0, BUFSZ);
-        size_t count = recv(csock, buf, BUFSZ - 1, 0);
+        char buf[BUFFER_SIZE];
+        memset(buf, 0, BUFFER_SIZE);
+        size_t count = recv(csock, buf, BUFFER_SIZE - 1, 0);
         printf("[msg] %s, %d bytes: %s\n", caddrstr, (int)count, buf);
         
         //recuperar mensagem total

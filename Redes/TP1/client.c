@@ -1,4 +1,5 @@
 #include "common.h"
+#include "constants.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,8 +15,6 @@ void usage(int argc, char **argv) {
 	printf("example: %s 127.0.0.1 51511\n", argv[0]);
 	exit(EXIT_FAILURE);
 }
-
-#define BUFSZ 1024
 
 int main(int argc, char **argv) {
 
@@ -45,17 +44,18 @@ int main(int argc, char **argv) {
 	}
 
 	// log de conexao
-	char addrstr[BUFSZ];
-	addrtostr(addr, addrstr, BUFSZ);
+	char addrstr[BUFFER_SIZE];
+	addrtostr(addr, addrstr, BUFFER_SIZE);
 	printf("connected to %s\n", addrstr);
 
 	//envio de mensagens
 	
-	char buf[BUFSZ];
-	memset(buf, 0, BUFSZ);
+	char buf[BUFFER_SIZE];
+	memset(buf, 0, BUFFER_SIZE);
+	
 	/*
 	printf("mensagem> ");
-	fgets(buf, BUFSZ-1, stdin);
+	fgets(buf, BUFFER_SIZE-1, stdin);
 	size_t count = send(s, buf, strlen(buf)+1, 0);
 	if (count != strlen(buf)+1) {
 		logexit("send");
@@ -65,15 +65,15 @@ int main(int argc, char **argv) {
 	
 
 	//buf recebe 0
-	//memset(buf, 0, BUFSZ);
+	//memset(buf, 0, BUFFER_SIZE);
 	unsigned total = 0;
 	while(1) {
 
 		//envio de mensagens
-		char buf[BUFSZ];
-		memset(buf, 0, BUFSZ);
+		char buf[BUFFER_SIZE];
+		memset(buf, 0, BUFFER_SIZE);
 		printf("mensagem> ");
-		fgets(buf, BUFSZ-1, stdin);
+		fgets(buf, BUFFER_SIZE-1, stdin);
 		if(buf == "kill"){
 			break;
 		}
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 
 		
 
-		count = recv(s, buf + total, BUFSZ - total, 0);
+		count = recv(s, buf + total, BUFFER_SIZE - total, 0);
 		if (count == 0 || count > 500) {
 			// Connection terminated.
 			break;
