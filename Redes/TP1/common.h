@@ -1,3 +1,6 @@
+#ifndef COMMON
+#define COMMON
+
 #pragma once
 
 #include <stdlib.h>
@@ -15,3 +18,5 @@ int server_sockaddr_init(const char *proto, const char *portstr,
                          struct sockaddr_storage *storage);
 
 int sendMessageToClient(int client_socket, char *mensagem);
+
+#endif
