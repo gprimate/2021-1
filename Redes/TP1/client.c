@@ -15,6 +15,10 @@ void usage(int argc, char **argv) {
 	exit(EXIT_FAILURE);
 }
 
+void teste(){
+	printf("teste");
+}
+
 #define BUFSZ 1024
 
 int main(int argc, char **argv) {
