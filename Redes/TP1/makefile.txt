@@ -1,0 +1,9 @@
+//somente um esboço do q era o makefile
+
+
+all:
+	gcc -Wall -c location.c
+	gcc -Wall main.c location.o -o main -lm
+
+clean:
+	rm *.o main

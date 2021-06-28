@@ -1,5 +1,5 @@
 #include "location.h"
-
+#include <math.h>
 
 int checkIfLocationIsValid(Location location) {
 

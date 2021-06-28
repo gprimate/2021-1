@@ -101,7 +101,7 @@ int server_sockaddr_init(const char *proto, const char *portstr,
     }
 }
 
-int send_message(int client_socket, char *mensagem) {
+int sendMessageToClient(int client_socket, char *mensagem) {
     ssize_t numBytesSent;
     
     numBytesSent = send(client_socket, mensagem, strlen(mensagem), 0);

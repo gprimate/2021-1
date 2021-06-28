@@ -54,24 +54,33 @@ int getOperationType(char **buf){
 
 
 
-void checkIsValidAndIsSaved(int clientSocket , Location location, Location locations[],char buffer[BUFFER_SIZE]){
+void checkIsValidAndIsSaved(int clientSocket , Location location, Location locations[]){
+
+    char buffer[BUFFER_SIZE];
 
     int isValid = checkIfLocationIsValid(location);
     
     if(isValid == 0){
         //muydar dps pra sprintf
-        printf(buffer,"invalid location");
-
+        //envio da mensagem em buffer
+        sprintf(buffer,"invalid location");
+        
+        printf("%p\n",&buffer);
         //send message function em common ...
+        sendMessageToClient(clientSocket,buffer);
+        
     }
     
     int isSaved = checkIfLocationIsSaved(location,locations);
 
     if(isSaved == 0){
         //mudar dps pra sprintf
-        printf("%d  %d  already exists\n", location.x ,location.y);
+        //envio da mensagem em buffer
+        sprintf(buffer,"%d  %d  already exists\n", location.x ,location.y);
 
         //send message function em common ...
+        printf("%p\n",&buffer);
+        //sendMessageToClient(clientSocket,buffer);
     }
 
     
@@ -86,43 +95,48 @@ void checkIsValidAndIsSaved(int clientSocket , Location location, Location locat
 void addLocation(int clientSocket , Location locationToAdd, Location locations[]){
 
     char buffer[BUFFER_SIZE];
-    int sizeLocations = sizeof(locations);
     
-    checkIsValidAndIsSaved(clientSocket,locationToAdd,locations,buffer);
+    checkIsValidAndIsSaved(clientSocket,locationToAdd,locations);
 
     int indexOfLocationToAdd = getLocationIndex(locationToAdd,locations);  
     
     locations[indexOfLocationToAdd].x = locationToAdd.x;
     locations[indexOfLocationToAdd].y = locationToAdd.y;
 
-    printf(" %d %d added\n",locationToAdd.x,locationToAdd.y);
 
-    //send message function em common ...
+    //send message function localizada em common ...
+    sprintf(buffer," %d %d added\n",locationToAdd.x,locationToAdd.y);
+    printf("%p\n",&buffer);
 
+    //sendMessageToClient(clientSocket,buffer); comentado so pra testar
 }
 
 // remove location NAO TESTADO
 void removeLocation(int clientSocket , Location locationToRemove, Location locations[]){
 
     char buffer[BUFFER_SIZE];
-    int sizeLocations = sizeof(locations);
 
-    checkIsValidAndIsSaved(clientSocket,locationToRemove,locations,buffer);
+    checkIsValidAndIsSaved(clientSocket,locationToRemove,locations);
 
     int indexOfLocationToRemove = getLocationIndex(locationToRemove,locations);
 
 
     if(indexOfLocationToRemove < 0){
         //send message function em common ...
-        //nao existe 
+        //nao existe
+        sprintf(buffer,"%d %d already exists",locationToRemove.x,locationToRemove.y);
+        printf("%p\n",&buffer);
+        //sendMessageToCient(clientSocket,buffer); -> comentado so pra testar
     }
 
     locations[indexOfLocationToRemove].x = -1;
     locations[indexOfLocationToRemove].y = -1;
-
-    printf("%d %d removed\n",locationToRemove.x,locationToRemove.y);
-
+    
     //send message function em common ...
+    sprintf(buffer,"%d %d removed\n",locationToRemove.x,locationToRemove.y);
+    printf("%p\n",&buffer);
+
+    //sendMessageToClient(clientSocket,buffer);
 }
 
 void listLocations(int clientSocket , Location locationToRemove, Location locations[]){
@@ -211,16 +225,20 @@ int main(int argc, char **argv) {
         char input[BUFFER_SIZE];
         memset(input,0,BUFFER_SIZE);
         strcpy(input,buf);
+        printf(" mensagem contida em input :  %s",input);
 
         char *token = strtok(input,"\n");
-
+        while(token != NULL){
+            printf(" conteudo de token : %s\n",token);
+            token = strtok(NULL,"\n");
+        }
         int i=0;
         char lines[BUFFER_SIZE][BUFFER_SIZE];
         memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
 
         //Recuperar array de lines
         
-        while(token != 1){
+        while(token != NULL){
             strcpy(lines[i],token);
             i+= 1;
             token = strtok(NULL,"\n");
@@ -228,9 +246,9 @@ int main(int argc, char **argv) {
 
         }
 
-        char *mess = token;
+        //char *mess = token;
 
-        printf("mess %c",token);
+        printf("mess %p",&lines);
 
         //continuação para definição da operação ..
 

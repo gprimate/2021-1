@@ -50,22 +50,42 @@ int main(int argc, char **argv) {
 	printf("connected to %s\n", addrstr);
 
 	//envio de mensagens
+	
 	char buf[BUFSZ];
 	memset(buf, 0, BUFSZ);
+	/*
 	printf("mensagem> ");
 	fgets(buf, BUFSZ-1, stdin);
 	size_t count = send(s, buf, strlen(buf)+1, 0);
 	if (count != strlen(buf)+1) {
 		logexit("send");
 	}
+	*/
 	//fim de envio de mensagem
+	
 
 	//buf recebe 0
-	memset(buf, 0, BUFSZ);
+	//memset(buf, 0, BUFSZ);
 	unsigned total = 0;
 	while(1) {
+
+		//envio de mensagens
+		char buf[BUFSZ];
+		memset(buf, 0, BUFSZ);
+		printf("mensagem> ");
+		fgets(buf, BUFSZ-1, stdin);
+		if(buf == "kill"){
+			break;
+		}
+		size_t count = send(s, buf, strlen(buf)+1, 0);
+		if (count != strlen(buf)+1) {
+			logexit("send");
+		}
+
+		
+
 		count = recv(s, buf + total, BUFSZ - total, 0);
-		if (count == 0) {
+		if (count == 0 || count > 500) {
 			// Connection terminated.
 			break;
 		}
