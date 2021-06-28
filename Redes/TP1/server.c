@@ -1,4 +1,6 @@
 #include "common.h"
+#include "constants.h"
+#include "location.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,11 +12,128 @@
 
 #define BUFSZ 1024
 
+
 void usage(int argc, char **argv) {
     printf("usage: %s <v4|v6> <server port>\n", argv[0]);
     printf("example: %s v4 51511\n", argv[0]);
     exit(EXIT_FAILURE);
 }
+
+
+
+// RECEBER O TIPO DE OPERAÇAO E 
+//TRATAR SE ESTA VALIDA OU INVALIDA E RETORNAR O TIPO DA OPERAÇAO
+int getOperationType(char **buf){
+    /*
+    int i=0;
+    char aux[10];
+
+    for(i=0;i<10;i++ ){
+        aux[i] = 0;
+    }
+
+    for (i=0;i< buf[i] != ' ' ;i++){
+        if(buf )
+    }
+*/
+    /*
+    switch (expression)
+    {
+    case /* constant-expression */ //:
+        /* code */
+       // break;
+    /*
+    default:
+        break;
+    }
+    */
+
+}
+
+// estou colocando aqui as funções q diz respeito ao server 
+
+
+
+void checkIsValidAndIsSaved(int clientSocket , Location location, Location locations[],char buffer[BUFFER_SIZE]){
+
+    int isValid = checkIfLocationIsValid(location);
+    
+    if(isValid == 0){
+        //muydar dps pra sprintf
+        printf(buffer,"invalid location");
+
+        //send message function em common ...
+    }
+    
+    int isSaved = checkIfLocationIsSaved(location,locations);
+
+    if(isSaved == 0){
+        //mudar dps pra sprintf
+        printf("%d  %d  already exists\n", location.x ,location.y);
+
+        //send message function em common ...
+    }
+
+    
+
+}
+
+
+
+
+
+//add location   NAO TESTADA
+void addLocation(int clientSocket , Location locationToAdd, Location locations[]){
+
+    char buffer[BUFFER_SIZE];
+    int sizeLocations = sizeof(locations);
+    
+    checkIsValidAndIsSaved(clientSocket,locationToAdd,locations,buffer);
+
+    int indexOfLocationToAdd = getLocationIndex(locationToAdd,locations);  
+    
+    locations[indexOfLocationToAdd].x = locationToAdd.x;
+    locations[indexOfLocationToAdd].y = locationToAdd.y;
+
+    printf(" %d %d added\n",locationToAdd.x,locationToAdd.y);
+
+    //send message function em common ...
+
+}
+
+// remove location NAO TESTADO
+void removeLocation(int clientSocket , Location locationToRemove, Location locations[]){
+
+    char buffer[BUFFER_SIZE];
+    int sizeLocations = sizeof(locations);
+
+    checkIsValidAndIsSaved(clientSocket,locationToRemove,locations,buffer);
+
+    int indexOfLocationToRemove = getLocationIndex(locationToRemove,locations);
+
+
+    if(indexOfLocationToRemove < 0){
+        //send message function em common ...
+        //nao existe 
+    }
+
+    locations[indexOfLocationToRemove].x = -1;
+    locations[indexOfLocationToRemove].y = -1;
+
+    printf("%d %d removed\n",locationToRemove.x,locationToRemove.y);
+
+    //send message function em common ...
+}
+
+void listLocations(int clientSocket , Location locationToRemove, Location locations[]){
+
+
+
+}
+
+
+
+
 
 int main(int argc, char **argv) {
 
@@ -82,11 +201,42 @@ int main(int argc, char **argv) {
         char caddrstr[BUFSZ];
         addrtostr(caddr, caddrstr, BUFSZ);
         printf("[log] connection from %s\n", caddrstr);
-        
+
         char buf[BUFSZ];
         memset(buf, 0, BUFSZ);
         size_t count = recv(csock, buf, BUFSZ - 1, 0);
         printf("[msg] %s, %d bytes: %s\n", caddrstr, (int)count, buf);
+        
+        //recuperar mensagem total
+        char input[BUFFER_SIZE];
+        memset(input,0,BUFFER_SIZE);
+        strcpy(input,buf);
+
+        char *token = strtok(input,"\n");
+
+        int i=0;
+        char lines[BUFFER_SIZE][BUFFER_SIZE];
+        memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
+
+        //Recuperar array de lines
+        
+        while(token != 1){
+            strcpy(lines[i],token);
+            i+= 1;
+            token = strtok(NULL,"\n");
+
+
+        }
+
+        char *mess = token;
+
+        printf("mess %c",token);
+
+        //continuação para definição da operação ..
+
+
+
+
 
         sprintf(buf, "remote endpoint: %.1000s\n", caddrstr);
         count = send(csock, buf, strlen(buf) + 1, 0);
