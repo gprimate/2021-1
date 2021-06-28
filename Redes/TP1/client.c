@@ -14,39 +14,42 @@ void usage(int argc, char **argv) {
 	printf("example: %s 127.0.0.1 51511\n", argv[0]);
 	exit(EXIT_FAILURE);
 }
-/*
-void teste(){
-	printf("teste");
-}
-*/
 
 #define BUFSZ 1024
 
 int main(int argc, char **argv) {
+
+	//se faltar argumentos ...
 	if (argc < 3) {
 		usage(argc, argv);
 	}
 
+
+	// storage
 	struct sockaddr_storage storage;
 	if (0 != addrparse(argv[1], argv[2], &storage)) {
 		usage(argc, argv);
 	}
 
+	//socket
 	int s;
 	s = socket(storage.ss_family, SOCK_STREAM, 0);
 	if (s == -1) {
 		logexit("socket");
 	}
+
+	// conexao com server
 	struct sockaddr *addr = (struct sockaddr *)(&storage);
 	if (0 != connect(s, addr, sizeof(storage))) {
 		logexit("connect");
 	}
 
+	// log de conexao
 	char addrstr[BUFSZ];
 	addrtostr(addr, addrstr, BUFSZ);
-
 	printf("connected to %s\n", addrstr);
 
+	//envio de mensagens
 	char buf[BUFSZ];
 	memset(buf, 0, BUFSZ);
 	printf("mensagem> ");
@@ -55,7 +58,9 @@ int main(int argc, char **argv) {
 	if (count != strlen(buf)+1) {
 		logexit("send");
 	}
+	//fim de envio de mensagem
 
+	//buf recebe 0
 	memset(buf, 0, BUFSZ);
 	unsigned total = 0;
 	while(1) {
