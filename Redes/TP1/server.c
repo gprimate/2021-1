@@ -24,31 +24,28 @@ void usage(int argc, char **argv)
 
 // RECEBER O TIPO DE OPERAÇAO E
 //E EXECUTA A FUNCAO RESPECTIVA
-int selectOperation(int clientSocket, char *operation)
+void selectOperation(int clientSocket, char *operation)
 {
+    
 
-    if (strcmp('add', operation) == 0)
+    if ( strcmp(operation,"add") == 0 ) 
     {
-
+        
         addLocation(clientSocket);
     }
-    else if (strcmp('rm', operation) == 0)
+    else if ( strcmp(operation ,"rm") == 0 )
     {
-        removeLocation(clientSocket);
+        //removeLocation(clientSocket);
     }
-
-    else if (strcmp('list', operation) == 0)
+    else if (strcmp(operation ,"query") == 0)
     {
-        listLocations(clientSocket);
-    }
-    else if (strcmp('query', operation) == 0)
-    {
-        query(clientSocket);
+        //query(clientSocket);
     }
     else
     {
         sendMessageToClient(clientSocket, " invalid arguments");
     }
+    
 }
 
 // estou colocando aqui as funções q diz respeito ao server
@@ -95,6 +92,9 @@ void addLocation(int clientSocket)
 {
 
     char buffer[BUFFER_SIZE];
+    memset(buffer,0,BUFFER_SIZE);
+
+    //LOCAL PROBLEMÁTICO INICIE AQUI !
 
     if (!checkIsValidAndIsSaved(clientSocket))
     {
@@ -108,7 +108,7 @@ void addLocation(int clientSocket)
 
     //send message function localizada em common ...
     sprintf(buffer, " %d %d added\n", location.x, location.y);
-    printf("%p\n", &buffer);
+    printf(" esse eh o buffer  : %s\n", buffer);
 
     //sendMessageToClient(clientSocket,buffer); comentado so pra testar
 }
@@ -202,79 +202,166 @@ void query(int clientSocket)
     sendMessageToClient(clientSocket, buffer);
 }
 
+void serverExec(char *buf,int clientSocket){
 
-//recuperar operação
-char getOperation (char *buff){
 
-    // tratar o buffer
-    char *token;
-    token = strtok(buff," ");
-    return token;
+    int contLines=0;
+    char *token = strtok(buf,"\n");
+    int i = 0;
+
+
+    char lines[BUFFER_SIZE][BUFFER_SIZE];
+    memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
+
+     while (token != NULL)
+    {
+
+        //ver se deu certo isso valor de lines
+        strcpy(lines[contLines], token);
+        contLines ++;
+        token = strtok(NULL, "\n");
+
+    }
+
+
+    //teste conteudo lines
+    for(i=0;i<contLines;i++){
+        printf("line %d  content %s \n",contLines,lines[i]);
+    }
+
+    // loop para iterar entre comandos
+    for(i=0;i<contLines;i++){
+
+        
+        char line[BUFFER_SIZE][BUFFER_SIZE];
+        memset(line,0,BUFFER_SIZE*BUFFER_SIZE);
+        char *tok = strtok(lines[i]," ");
+        int numOfTokens =0;
+        int cont=0;
+        
+        
+        while(tok != NULL){
+            strcpy(line[numOfTokens],tok);
+            numOfTokens++;
+            tok = strtok(NULL," ");
+
+        }
+
+        // AQUI VAI O TRATAMENTO DE COMANDOS INVALIDOS PELO NUMERO DE TOKENS
+
+
+        //TRATAMENTO DO PRIMEIRO TOKEN SE EH UM DOS 4 COMANDOS PERMITIDOS
+        
+        
+        if (numOfTokens > 1 && numOfTokens <= 3){
+
+
+        location.x=atoi(line[1]);
+        location.y=atoi(line[2]);
+        
+        
+        printf(" valor de operation : %s\n",line[0]);
+        printf(" valor de location.x : %d\n",location.x);
+        printf(" valor de location.y : %d\n",location.y);
+
+
+        //Necessario debugar o select operation
+        selectOperation(clientSocket,line[0]);
+
+           
+
+       }else if(numOfTokens == 1){
+        //se o comando so tem 1 palavra eh pq eh list
+        listLocations(clientSocket);
+       }
+
+       else{
+           //comando invalido
+           sendMessageToClient(clientSocket,"Invalid command");
+       }
+
+       
+                
+
+    }
+
+    //printf("valor de contLines %d\n",contLines);
+
+    
 }
 
-
-
+/*
 void execucaoServidor(char *buf,int clientSocket){
-
+    printf("chegou aaq ");
     //separar os comandos em linhas
     int contLines=0;
     char *token = strtok(buf,"\n");
     int i = 0;
             
     //Recuperar array de lines           
-    char *lines[BUFFER_SIZE];
-    
+    char lines[BUFFER_SIZE][BUFFER_SIZE];
+    memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
 
     while (token != NULL)
     {
 
         //ver se deu certo isso valor de lines
-        strcpy(lines[i], token);
+        strcpy(lines[contLines], token);
         contLines ++;
         token = strtok(NULL, "\n");
 
     }
 
-    //partir a string em espaços e mandar para o fluxo
+    //teste conteudo lines
+    for(i=0;i<contLines;i++){
+        printf("line %d  content %s ",contLines,lines[i]);
+    }
+
+    //partir o comando da lista de comandos em espaços e mandar para o fluxo
     for(i=0;i<contLines;i++){
 
          
-       
-        //partindo uma linha em tokens
-        char *line;
+        //partindo uma frase em tokens
+        char *line[BUFFER_SIZE];
+        int numOfTokens =0;
+        int cont=0;
         memset(line,0,BUFFER_SIZE);
         token = strtok(lines[i]," ");
         while(token != NULL){
-            //strcpy(line[i]);
-            i++;
-
-                
+            strcpy(line[numOfTokens],token);
+            numOfTokens++;
+            token = strtok(NULL," ");
         }
-        /*
-        //apos partir line[0] = op  / line[1] = x / line[2] = y;
-        locations[i].x = line[1];
-        locations[i].y = line[2];
-        */
-        //operacao corrente
-        char *operation = getOperation(line[0]);
 
-        //continuação para definição da operação ..
+        //tratar possibilidades de comando
+        //se tiver apenas 1 palavra vai pra list
+       if (numOfTokens > 0 && numOfTokens <= 3){
+        
+        location.x=atoi(line[1]);
+        location.y=atoi(line[2]);
+        locations[i]=location;
+
+        char *operation = line[0];
         selectOperation(clientSocket,operation);
-    
+
+           
+
+       }else if(numOfTokens == 0){
+        //se o comando so tem 1 palavra eh pq eh list
+        listLocations(clientSocket);
+       }
+
+       else{
+           //comando invalido
+           sendMessageToClient(clientSocket,"Invalid command");
+       }
 
     }
-    /*
-    char line
-    token = strtok(lines[i]," ");
-    */
-  
-   
 
     //tratar operações invalidas
 
-   
-
 }
+*/
 
 
 
@@ -360,11 +447,13 @@ int main(int argc, char **argv)
             char input[BUFFER_SIZE];
             memset(input, 0, BUFFER_SIZE);
             strcpy(input, buf);
-            printf(" mensagem contida em input :  %s", input);
+            //printf(" mensagem contida em input :  %s", input);
             int i = 0;
 
             //filtro msg
             //int cont=0;
+            //printf(" input tem tamanho : %d\n",strlen(input));
+            
             for (i = 0; i <= strlen(input); i++)
             {
                 if (input[i] == '\n')
@@ -372,29 +461,33 @@ int main(int argc, char **argv)
                     input[i] = 0;
                 }
             }
+            //printf(" input tem tamanho : %d\n",strlen(input));
+            //printf(" mensagem contida em input :  %s", input);
 
-            //verificar kill
+            //verificar kill    
             if (strcmp(input, "kill") == 0)
             {
                 logexit("killed server");
                 close(csock);
                 return -1;
             }
-
+            /*
             char *token = strtok(input, "\n");
-            sendMessageToClient(csock, "checando\n");
+
+            
 
             while (token != NULL)
             {
                 printf(" conteudo de token : %s\n", token);
                 token = strtok(NULL, "\n");
             }
-
-            // tratamento das consultas
-            char *operation;
+            */
 
             //execucao servidor "init"
-            execucaoServidor(input,csock);
+            serverExec(input,csock);
+            sendMessageToClient(csock, "checando\n");
+            
+            //execucaoServidor(input,csock);
             
             //sprintf(buf, "remote endpoint: %.1000s\n", caddrstr);
             //count = send(csock, buf, strlen(buf) + 1, 0);

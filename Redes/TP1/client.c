@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 		}
 
 		count = recv(s, buf, BUFFER_SIZE, 0);
-		printf("tam de count : %d\n",count);
+		//printf("tam de count : %d\n",count);
 
 		printf(" mensagem do server : %s\n",buf);
 		if (count == 0 || count > 500) {
