@@ -163,7 +163,32 @@ void listLocations(int clientSocket, Location locations[]) {
 }
 
 
+void query(int clientSocket, Location location, Location locations[]) {
 
+    char buffer[BUFFER_SIZE] = "";
+    
+    double smallestDistance = 10000 * sqrt(2);
+    Location smallestLocation;
+
+    if (isEmpty(locations)) {
+        sprintf(buffer, "none\n");
+
+    } else {
+        for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+
+            if (checkIfLocationIsValid(locations[i])) {
+                double distance = getDistanceBetweenLocations(location, locations[i]);
+
+                if (distance < smallestDistance && distance != 0) {
+                    smallestDistance = distance;
+                    smallestLocation = locations[i];
+                }
+            }
+        }
+        sprintf(buffer, "%d %d ", smallestLocation.x, smallestLocation.y);
+    }
+    sendMessageToClient(clientSocket, buffer);
+}
 
 
 int main(int argc, char **argv) {
