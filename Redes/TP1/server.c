@@ -140,14 +140,59 @@ void removeLocation(int clientSocket , Location locationToRemove, Location locat
     //sendMessageToClient(clientSocket,buffer);
 }
 
-void listLocations(int clientSocket , Location locationToRemove, Location locations[]){
+void listLocations(int clientSocket, Location locations[]) {
 
+<<<<<<< HEAD
     
+=======
+    char buffer[BUFFER_SIZE] = "";
 
+    if (isEmpty(locations)) {
+        sprintf(buffer, "none\n");
+>>>>>>> 43d29e5815abed1719c7d38d3f890c5cc1f044fb
+
+    } else {
+
+        for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+
+            if (checkIfLocationIsValid(locations[i])) {
+                char location[MAX_LOCATION_SIZE] = "";
+
+                sprintf(location, "%d %d ", locations[i].x, locations[i].y);
+                strcat(buffer, location);
+            }
+        }
+    }
+    sendMessageToClient(clientSocket, buffer);
 }
 
 
+void query(int clientSocket, Location location, Location locations[]) {
 
+    char buffer[BUFFER_SIZE] = "";
+    
+    double smallestDistance = 10000 * sqrt(2);
+    Location smallestLocation;
+
+    if (isEmpty(locations)) {
+        sprintf(buffer, "none\n");
+
+    } else {
+        for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+
+            if (checkIfLocationIsValid(locations[i])) {
+                double distance = getDistanceBetweenLocations(location, locations[i]);
+
+                if (distance < smallestDistance && distance != 0) {
+                    smallestDistance = distance;
+                    smallestLocation = locations[i];
+                }
+            }
+        }
+        sprintf(buffer, "%d %d ", smallestLocation.x, smallestLocation.y);
+    }
+    sendMessageToClient(clientSocket, buffer);
+}
 
 
 int main(int argc, char **argv) {
