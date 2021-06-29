@@ -77,19 +77,29 @@ int main(int argc, char **argv) {
 		if(buf == "kill"){
 			break;
 		}
+
 		size_t count = send(s, buf, strlen(buf)+1, 0);
 		if (count != strlen(buf)+1) {
 			logexit("send");
 		}
 
-		
+		count = recv(s, buf, BUFFER_SIZE, 0);
+		printf("tam de count : %d\n",count);
 
-		count = recv(s, buf + total, BUFFER_SIZE - total, 0);
+		printf(" mensagem do server : %s",buf);
 		if (count == 0 || count > 500) {
 			// Connection terminated.
+			printf("veio aq ?");
 			break;
 		}
-		total += count;
+
+		/*
+		if(buf[0] ==1){
+			break;
+		}
+		*/
+
+		//total += count;
 	}
 	close(s);
 

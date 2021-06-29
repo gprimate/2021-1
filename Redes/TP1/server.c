@@ -142,7 +142,7 @@ void removeLocation(int clientSocket , Location locationToRemove, Location locat
 
 void listLocations(int clientSocket , Location locationToRemove, Location locations[]){
 
-
+    
 
 }
 
@@ -227,13 +227,35 @@ int main(int argc, char **argv) {
         memset(input,0,BUFFER_SIZE);
         strcpy(input,buf);
         printf(" mensagem contida em input :  %s",input);
+        int i=0;
+
+        //verificar kill
+        //filtro msg
+        int cont=0;
+        for(i=0;i<= strlen(input);i++){
+            
+            if(input[i] == '\n'){
+                input[i] = 0;
+            }
+            
+        }
+        
+
+        if(strcmp(input,"kill") == 0){
+            logexit("killed server");
+            close(csock);
+            return -1;
+        }
 
         char *token = strtok(input,"\n");
+        sendMessageToClient(csock,"checando");
+
         while(token != NULL){
             printf(" conteudo de token : %s\n",token);
             token = strtok(NULL,"\n");
         }
-        int i=0;
+        
+        i=0;
         char lines[BUFFER_SIZE][BUFFER_SIZE];
         memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
 
@@ -249,7 +271,7 @@ int main(int argc, char **argv) {
 
         //char *mess = token;
 
-        printf("mess %p",&lines);
+        printf("mess %s",lines[0]);
 
         //continuação para definição da operação ..
 
@@ -257,8 +279,8 @@ int main(int argc, char **argv) {
 
 
 
-        sprintf(buf, "remote endpoint: %.1000s\n", caddrstr);
-        count = send(csock, buf, strlen(buf) + 1, 0);
+        //sprintf(buf, "remote endpoint: %.1000s\n", caddrstr);
+        //count = send(csock, buf, strlen(buf) + 1, 0);
         if (count != strlen(buf) + 1) {
             logexit("send");
         }
