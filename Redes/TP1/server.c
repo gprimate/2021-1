@@ -144,17 +144,22 @@ void listLocations(int clientSocket, Location locations[]) {
 
     char buffer[BUFFER_SIZE] = "";
 
-    for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+    if (isEmpty(locations)) {
+        sprintf(buffer, "none\n");
 
-        if (checkIfLocationIsValid(locations[i])) {
-            char location[MAX_LOCATION_SIZE] = "";
+    } else {
 
-            sprintf(location, "%d %d ", locations[i].x, locations[i].y);
-            strcat(buffer, location);
+        for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+
+            if (checkIfLocationIsValid(locations[i])) {
+                char location[MAX_LOCATION_SIZE] = "";
+
+                sprintf(location, "%d %d ", locations[i].x, locations[i].y);
+                strcat(buffer, location);
+            }
         }
     }
-
-    
+    sendMessageToClient(clientSocket, buffer);
 }
 
 
