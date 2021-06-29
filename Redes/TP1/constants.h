@@ -12,6 +12,7 @@
 
 #define MIN_XY_VALUE 0
 #define MAX_XY_VALUE 9999
+#define MAX_LOCATION_SIZE 12
 
 #define MAX_NUMBER_OF_LOCATIONS 50
 

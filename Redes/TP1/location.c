@@ -67,3 +67,13 @@ int getLocationIndex(Location location,
     }
     return -1;
 }
+
+void isEmpty(Location locations[MAX_NUMBER_OF_LOCATIONS]) {
+
+    for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
+        if (checkIfLocationIsValid(locations[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}

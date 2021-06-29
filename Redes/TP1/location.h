@@ -13,6 +13,8 @@ typedef struct {
 
 int checkIfLocationIsValid(Location location);
 
+void isEmpty(Location locations[MAX_NUMBER_OF_LOCATIONS]);
+
 int checkIfLocationIsSaved(Location location, 
     Location locations[MAX_NUMBER_OF_LOCATIONS]);
 

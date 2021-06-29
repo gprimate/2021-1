@@ -140,10 +140,21 @@ void removeLocation(int clientSocket , Location locationToRemove, Location locat
     //sendMessageToClient(clientSocket,buffer);
 }
 
-void listLocations(int clientSocket , Location locationToRemove, Location locations[]){
+void listLocations(int clientSocket, Location locations[]) {
 
+    char buffer[BUFFER_SIZE] = "";
 
+    for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
 
+        if (checkIfLocationIsValid(locations[i])) {
+            char location[MAX_LOCATION_SIZE] = "";
+
+            sprintf(location, "%d %d ", locations[i].x, locations[i].y);
+            strcat(buffer, location);
+        }
+    }
+
+    
 }
 
 
