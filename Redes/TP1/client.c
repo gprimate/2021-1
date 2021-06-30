@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 		memset(bufz,0,BUFFER_SIZE);
 		count = recv(s, bufz, BUFFER_SIZE, 0);
 		//printf("tam de count : %d\n",count);
-		printf("apos receber %s\n",bufz);
+
 		printf("server : %s\n",bufz);
 
 
