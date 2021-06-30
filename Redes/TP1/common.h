@@ -19,4 +19,6 @@ int server_sockaddr_init(const char *proto, const char *portstr,
 
 int sendMessageToClient(int client_socket, char *mensagem);
 
+int isNumber(char *buffer);
+
 #endif

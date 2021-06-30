@@ -117,3 +117,14 @@ int sendMessageToClient(int client_socket, char *mensagem) {
 }
 
 
+int isNumber(char *buffer) {
+    for (size_t i = 0; i < strlen(buffer); i++) {
+        if (!isdigit(buffer[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+

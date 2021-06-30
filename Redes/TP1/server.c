@@ -112,7 +112,7 @@ void addLocation(int clientSocket)
     locations[indexOfLocationToAdd].y = location.y;
 
     //send message function localizada em common ...
-    sprintf(buffer, " %d %d added\n", location.x, location.y);
+    sprintf(buffer, " %d %d added", location.x, location.y);
     
 
     sendMessageToClient(clientSocket,buffer);
@@ -146,7 +146,7 @@ void removeLocation(int clientSocket)
     locations[indexOfLocationToRemove].y = -1;
 
     //send message function em common ...
-    sprintf(buffer, "%d %d removed\n", location.x, location.y);
+    sprintf(buffer, "%d %d removed", location.x, location.y);
     //printf("%p\n", &buffer);
 
     sendMessageToClient(clientSocket,buffer);
@@ -249,57 +249,6 @@ int checkIfOperationIsValid(char *buf) {
     return 0;
 }
 
-int checkIfLocationIsValidFromBuffer(char *buf) {
-
-    //printf("Esse é o token que chegou como parametro: %s|\n", buf);
-    char * token = strtok(buf, " ");
-    //printf("Esse é o token: %s|\n", token);
-    token = strtok(NULL, " "); 
-    //printf("Esse é o segundo token: %s|\n", token);
-    Location location;
-
-    int coordx, coordy = -1;
-
-    if (token != NULL) {
-        for (size_t i = 0; i < strlen(token); i++) {
-            if (!isdigit(token[i])) {
-                printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
-                return 0;
-            }
-        }
-        coordx = atoi(token);
-    } else {
-        //printf("Primeiro token é nulo\n");
-        return 0;
-    }
-
-    token = strtok(NULL, " "); 
-
-    if (token != NULL) {
-        for (size_t i = 0; i < strlen(token); i++) {
-            if (!isdigit(token[i])) {
-               // printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
-                return 0;
-            }
-        }
-        coordy = atoi(token);
-
-        location.x = coordx;
-        location.y = coordy;
-
-        if(checkIfLocationIsValid(location)) {
-            return 1;
-
-        }
-        
-
-    } else {
-       // printf("Segundo token é nulo\n");
-        return 0;
-    }
-    return 0;
-}
-
 void serverExec(char *buf,int clientSocket){
 
 
@@ -351,44 +300,40 @@ void serverExec(char *buf,int clientSocket){
 
         }
 
+
         // AQUI VAI O TRATAMENTO DE COMANDOS INVALIDOS PELO NUMERO DE TOKENS
 
 
         //TRATAMENTO DO PRIMEIRO TOKEN SE EH UM DOS 4 COMANDOS PERMITIDOS
         
-        if (numOfTokens > 1 && numOfTokens <= 3){
+        if(checkIfOperationIsValid(lines[i])) {
+            if (numOfTokens > 1 && numOfTokens <= 3){
 
+                if (isNumber(line[1]) && isNumber(line[2])) {
 
-            location.x=atoi(line[1]);
-            location.y=atoi(line[2]);
-            
+                    location.x=atoi(line[1]);
+                    location.y=atoi(line[2]);
                     
-            printf(" valor de operation : %s\n",line[0]);
-            printf(" valor de location.x : %d\n",location.x);
-            printf(" valor de location.y : %d\n",location.y);
+                    printf(" valor de operation : %s\n",line[0]);
+                    printf(" valor de location.x : %d\n",location.x);
+                    printf(" valor de location.y : %d\n",location.y);
 
-
-            //Necessario debugar o select operation
-           // sendMessageToClient(clientSocket, "\ncomeco\n"); //apagar
-            //sendMessageToClient(clientSocket, line[0]); //apagar
-          //  sendMessageToClient(clientSocket, "\nfinal da mensagem\n"); //apagar
-
-            selectOperation(clientSocket,line[0]);
-
-
-       }else if(numOfTokens == 1){
-        //se o comando so tem 1 palavra eh pq eh list
-        listLocations(clientSocket);
-       }
-
-       else{
-           //comando invalido
-           sendMessageToClient(clientSocket,"Invalid command");
-       }
-
-       
+                    selectOperation(clientSocket,line[i]);
+                } else {
+                    sendMessageToClient(clientSocket,"Invalid command hereheh");  
+                }
                 
+            }else if(numOfTokens == 1){
+                //se o comando so tem 1 palavra eh pq eh list
+                listLocations(clientSocket);
+            } else {
+                sendMessageToClient(clientSocket,"Invalid command hereh");           
+            }
 
+            
+        } else {
+            sendMessageToClient(clientSocket,"Invalid command here");           
+        }
     }
 
     //printf("valor de contLines %d\n",contLines);
