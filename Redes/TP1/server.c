@@ -27,7 +27,6 @@ void usage(int argc, char **argv)
 void selectOperation(int clientSocket, char *operation)
 {
     
-    sendMessageToClient(clientSocket, "\nCheguei brazil no select op\n"); // apagar
 
     if ( strcmp(operation,"add") == 0 ) 
     {
@@ -252,11 +251,11 @@ int checkIfOperationIsValid(char *buf) {
 
 int checkIfLocationIsValidFromBuffer(char *buf) {
 
-    printf("Esse é o token que chegou como parametro: %s|\n", buf);
+    //printf("Esse é o token que chegou como parametro: %s|\n", buf);
     char * token = strtok(buf, " ");
-    printf("Esse é o token: %s|\n", token);
+    //printf("Esse é o token: %s|\n", token);
     token = strtok(NULL, " "); 
-    printf("Esse é o segundo token: %s|\n", token);
+    //printf("Esse é o segundo token: %s|\n", token);
     Location location;
 
     int coordx, coordy = -1;
@@ -270,7 +269,7 @@ int checkIfLocationIsValidFromBuffer(char *buf) {
         }
         coordx = atoi(token);
     } else {
-        printf("Primeiro token é nulo\n");
+        //printf("Primeiro token é nulo\n");
         return 0;
     }
 
@@ -279,7 +278,7 @@ int checkIfLocationIsValidFromBuffer(char *buf) {
     if (token != NULL) {
         for (size_t i = 0; i < strlen(token); i++) {
             if (!isdigit(token[i])) {
-                printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
+               // printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
                 return 0;
             }
         }
@@ -295,7 +294,7 @@ int checkIfLocationIsValidFromBuffer(char *buf) {
         
 
     } else {
-        printf("Segundo token é nulo\n");
+       // printf("Segundo token é nulo\n");
         return 0;
     }
     return 0;
@@ -327,9 +326,9 @@ void serverExec(char *buf,int clientSocket){
     for(i=0;i<contLines;i++){
         printf("line %d  content %s \n",contLines, lines[i]);
     }
-    printf("Lines[0] antes de chamar funcao? %s\n", lines[0]);
+    //printf("Lines[0] antes de chamar funcao? %s\n", lines[0]);
     //printf("Is the operation valid? %d\n", checkIfOperationIsValid(lines[0]));
-    printf("Is the location valid? %d\n", checkIfLocationIsValidFromBuffer(lines[0]));
+    //printf("Is the location valid? %d\n", checkIfLocationIsValidFromBuffer(lines[0]));
 
 
     // loop para iterar entre comandos
@@ -342,7 +341,7 @@ void serverExec(char *buf,int clientSocket){
         char *tok = strtok(lines[i]," ");
         int numOfTokens =0;
         int cont=0;
-        printf("Lines[0] depois do strtok? %s\n", lines[0]);
+       // printf("Lines[0] depois do strtok? %s\n", lines[0]);
         
         
         while(tok != NULL){
@@ -371,9 +370,9 @@ void serverExec(char *buf,int clientSocket){
 
 
             //Necessario debugar o select operation
-            sendMessageToClient(clientSocket, "\ncomeco\n"); //apagar
+           // sendMessageToClient(clientSocket, "\ncomeco\n"); //apagar
             sendMessageToClient(clientSocket, line[0]); //apagar
-            sendMessageToClient(clientSocket, "\nfinal da mensagem\n"); //apagar
+          //  sendMessageToClient(clientSocket, "\nfinal da mensagem\n"); //apagar
 
             selectOperation(clientSocket,line[0]);
 

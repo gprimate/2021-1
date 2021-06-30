@@ -104,12 +104,14 @@ int server_sockaddr_init(const char *proto, const char *portstr,
 int sendMessageToClient(int client_socket, char *mensagem) {
     ssize_t numBytesSent;
     
+    printf(" mensagem : %s\n",mensagem);
+    
     numBytesSent = send(client_socket, mensagem, strlen(mensagem), 0);
     if (numBytesSent != strlen(mensagem)){
         logexit("send() failed");
     }
 
-    printf("\nMensagem enviada para o cliente: %s\n", mensagem);
+    //printf("\nMensagem enviada para o cliente: %s\n", mensagem);
 
     return numBytesSent;
 }

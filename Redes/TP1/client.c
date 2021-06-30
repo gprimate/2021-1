@@ -87,7 +87,8 @@ int main(int argc, char **argv) {
 		//printf("tam de count : %d\n",count);
 
 		printf("server : %s\n",buf);
-		
+
+
 		if (count == 0 || count > 500) {
 			// Connection terminated.
 			printf("veio aq ?");
