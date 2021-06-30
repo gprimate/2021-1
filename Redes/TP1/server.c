@@ -306,11 +306,10 @@ void serverExec(char *buf,int clientSocket){
     int contLines=0;
     char *token = strtok(buf,"\n");
     int i = 0;
-    printf("O Buff inicial depois do strtok %s\n", buf);
 
     char lines[BUFFER_SIZE][BUFFER_SIZE];
     memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
-
+    
      while (token != NULL)
     {
 
@@ -321,11 +320,12 @@ void serverExec(char *buf,int clientSocket){
 
     }
 
-
+    /*
     //teste conteudo lines
     for(i=0;i<contLines;i++){
-        printf("line %d  content %s \n",contLines, lines[i]);
+        
     }
+    */
     //printf("Lines[0] antes de chamar funcao? %s\n", lines[0]);
     //printf("Is the operation valid? %d\n", checkIfOperationIsValid(lines[0]));
     //printf("Is the location valid? %d\n", checkIfLocationIsValidFromBuffer(lines[0]));
@@ -340,7 +340,7 @@ void serverExec(char *buf,int clientSocket){
         
         char *tok = strtok(lines[i]," ");
         int numOfTokens =0;
-        int cont=0;
+        //int cont=0;
        // printf("Lines[0] depois do strtok? %s\n", lines[0]);
         
         
@@ -356,7 +356,6 @@ void serverExec(char *buf,int clientSocket){
 
         //TRATAMENTO DO PRIMEIRO TOKEN SE EH UM DOS 4 COMANDOS PERMITIDOS
         
-        
         if (numOfTokens > 1 && numOfTokens <= 3){
 
 
@@ -371,7 +370,7 @@ void serverExec(char *buf,int clientSocket){
 
             //Necessario debugar o select operation
            // sendMessageToClient(clientSocket, "\ncomeco\n"); //apagar
-            sendMessageToClient(clientSocket, line[0]); //apagar
+            //sendMessageToClient(clientSocket, line[0]); //apagar
           //  sendMessageToClient(clientSocket, "\nfinal da mensagem\n"); //apagar
 
             selectOperation(clientSocket,line[0]);
@@ -548,9 +547,10 @@ int main(int argc, char **argv)
         while (1)
         {
 
-            char buf[BUFFER_SIZE];
+            char buf[BUFFER_SIZE] = "";
             memset(buf, 0, BUFFER_SIZE);
             size_t count = recv(csock, buf, BUFFER_SIZE - 1, 0);
+            
             printf("[msg] %s, %d bytes: %s\n", caddrstr, (int)count, buf);
 
             //recuperar mensagem total
@@ -597,7 +597,9 @@ int main(int argc, char **argv)
             if ((int)count > BUFFER_SIZE) {
                 close(csock);
             }
-            
+
+
+            //printf("Verificar valor de input : %s",input);   
             serverExec(input,csock);
             //sendMessageToClient(csock, "checando\n");
             

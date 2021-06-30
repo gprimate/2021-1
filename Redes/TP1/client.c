@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 	while(1) {
 
 		//envio de mensagens
-		char buf[BUFFER_SIZE];
+		char buf[BUFFER_SIZE] = "";
 		memset(buf, 0, BUFFER_SIZE);
 		printf("mensagem> ");
 		fgets(buf, BUFFER_SIZE-1, stdin);
