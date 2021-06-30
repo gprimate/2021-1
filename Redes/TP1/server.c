@@ -78,7 +78,7 @@ int checkIsValidAndIsSaved(int clientSocket)
     {
         //mudar dps pra sprintf
         //envio da mensagem em buffer
-        sprintf(buffer, "%d  %d  already exists\n", location.x, location.y);
+        sprintf(buffer, "%d %d already exists\n", location.x, location.y);
 
         //send message function em common ...
         sendMessageToClient(clientSocket,buffer);

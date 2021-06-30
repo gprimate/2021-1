@@ -82,11 +82,13 @@ int main(int argc, char **argv) {
 		if (count != strlen(buf)+1) {
 			logexit("send");
 		}
-
-		count = recv(s, buf, BUFFER_SIZE, 0);
+		
+		char bufz[BUFFER_SIZE] = "";
+		memset(bufz,0,BUFFER_SIZE);
+		count = recv(s, bufz, BUFFER_SIZE, 0);
 		//printf("tam de count : %d\n",count);
-
-		printf("server : %s\n",buf);
+		printf("apos receber %s\n",bufz);
+		printf("server : %s\n",bufz);
 
 
 		if (count == 0 || count > 500) {
