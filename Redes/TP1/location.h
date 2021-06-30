@@ -24,6 +24,8 @@ void initializeLocations(Location locations[MAX_NUMBER_OF_LOCATIONS]);
 
 int getEmptyLocationIndex(Location locarions[MAX_NUMBER_OF_LOCATIONS]);
 
+int getFirstEmptyPlace(Location location,Location locations[MAX_NUMBER_OF_LOCATIONS]);
+
 int getLocationIndex(Location location, 
     Location locations[MAX_NUMBER_OF_LOCATIONS]);
 

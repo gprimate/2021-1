@@ -68,6 +68,17 @@ int getLocationIndex(Location location,
     return -1;
 }
 
+int getFirstEmptyPlace(Location location,Location locations[MAX_NUMBER_OF_LOCATIONS]){
+
+    for(size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++){
+        if(locations[i].x == -1 && locations[i].y == -1){
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 int isEmpty(Location locations[MAX_NUMBER_OF_LOCATIONS]) {
 
     for (size_t i = 0; i < MAX_NUMBER_OF_LOCATIONS; i++) {
