@@ -27,6 +27,7 @@ void usage(int argc, char **argv)
 void selectOperation(int clientSocket, char *operation)
 {
     
+    sendMessageToClient(clientSocket, "\nCheguei brazil no select op\n"); // apagar
 
     if ( strcmp(operation,"add") == 0 ) 
     {
@@ -202,13 +203,89 @@ void query(int clientSocket)
     sendMessageToClient(clientSocket, buffer);
 }
 
+int checkIfOperationIsValid(char *buf) {
+    char * token = strtok(buf, " ");
+
+    char operation[MAX_OP_SIZE];
+    Location location;
+
+    int count = 0;
+    printf("Esse eh o buf: %s|\n", buf);
+
+    if ((strcmp(buf, ADD) == 0)){
+        return 1;
+    }
+    if ((strcmp(buf, REMOVE) == 0)){
+        return 1;
+    }
+    if ((strcmp(buf, QUERY) == 0)){ 
+        return 1;
+    }
+    if ((strcmp(buf, LIST) == 0)){ 
+        return 1;
+    }
+
+    return 0;
+}
+
+int checkIfLocationIsValidFromBuffer(char *buf) {
+
+    printf("Esse é o token que chegou como parametro: %s|\n", buf);
+    char * token = strtok(buf, " ");
+    printf("Esse é o token: %s|\n", token);
+    token = strtok(NULL, " "); 
+    printf("Esse é o segundo token: %s|\n", token);
+    Location location;
+
+    int coordx, coordy = -1;
+
+    if (token != NULL) {
+        for (size_t i = 0; i < strlen(token); i++) {
+            if (!isdigit(token[i])) {
+                printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
+                return 0;
+            }
+        }
+        coordx = atoi(token);
+    } else {
+        printf("Primeiro token é nulo\n");
+        return 0;
+    }
+
+    token = strtok(NULL, " "); 
+
+    if (token != NULL) {
+        for (size_t i = 0; i < strlen(token); i++) {
+            if (!isdigit(token[i])) {
+                printf("checkIfLocationIsValidFromBuffer retornou falso com i = %d\n", (int)i);
+                return 0;
+            }
+        }
+        coordy = atoi(token);
+
+        location.x = coordx;
+        location.y = coordy;
+
+        if(checkIfLocationIsValid(location)) {
+            return 1;
+
+        }
+        
+
+    } else {
+        printf("Segundo token é nulo\n");
+        return 0;
+    }
+    return 0;
+}
+
 void serverExec(char *buf,int clientSocket){
 
 
     int contLines=0;
     char *token = strtok(buf,"\n");
     int i = 0;
-
+    printf("O Buff inicial depois do strtok %s\n", buf);
 
     char lines[BUFFER_SIZE][BUFFER_SIZE];
     memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
@@ -226,8 +303,12 @@ void serverExec(char *buf,int clientSocket){
 
     //teste conteudo lines
     for(i=0;i<contLines;i++){
-        printf("line %d  content %s \n",contLines,lines[i]);
+        printf("line %d  content %s \n",contLines, lines[i]);
     }
+    printf("Lines[0] antes de chamar funcao? %s\n", lines[0]);
+    //printf("Is the operation valid? %d\n", checkIfOperationIsValid(lines[0]));
+    printf("Is the location valid? %d\n", checkIfLocationIsValidFromBuffer(lines[0]));
+
 
     // loop para iterar entre comandos
     for(i=0;i<contLines;i++){
@@ -235,9 +316,11 @@ void serverExec(char *buf,int clientSocket){
         
         char line[BUFFER_SIZE][BUFFER_SIZE];
         memset(line,0,BUFFER_SIZE*BUFFER_SIZE);
+        
         char *tok = strtok(lines[i]," ");
         int numOfTokens =0;
         int cont=0;
+        printf("Lines[0] depois do strtok? %s\n", lines[0]);
         
         
         while(tok != NULL){
@@ -256,17 +339,21 @@ void serverExec(char *buf,int clientSocket){
         if (numOfTokens > 1 && numOfTokens <= 3){
 
 
-        location.x=atoi(line[1]);
-        location.y=atoi(line[2]);
-        
-        
-        printf(" valor de operation : %s\n",line[0]);
-        printf(" valor de location.x : %d\n",location.x);
-        printf(" valor de location.y : %d\n",location.y);
+            location.x=atoi(line[1]);
+            location.y=atoi(line[2]);
+            
+                    
+            printf(" valor de operation : %s\n",line[0]);
+            printf(" valor de location.x : %d\n",location.x);
+            printf(" valor de location.y : %d\n",location.y);
 
 
-        //Necessario debugar o select operation
-        selectOperation(clientSocket,line[0]);
+            //Necessario debugar o select operation
+            sendMessageToClient(clientSocket, "\ncomeco\n"); //apagar
+            sendMessageToClient(clientSocket, line[0]); //apagar
+            sendMessageToClient(clientSocket, "\nfinal da mensagem\n"); //apagar
+
+            selectOperation(clientSocket,line[0]);
 
            
 
@@ -484,6 +571,10 @@ int main(int argc, char **argv)
             */
 
             //execucao servidor "init"
+            if ((int)count > BUFFER_SIZE) {
+                close(csock);
+            }
+            
             serverExec(input,csock);
             sendMessageToClient(csock, "checando\n");
             

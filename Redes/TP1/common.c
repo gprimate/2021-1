@@ -109,7 +109,7 @@ int sendMessageToClient(int client_socket, char *mensagem) {
         logexit("send() failed");
     }
 
-    printf("\n Mensagem enviada para o cliente: %s\n", mensagem);
+    printf("\nMensagem enviada para o cliente: %s\n", mensagem);
 
     return numBytesSent;
 }
