@@ -309,12 +309,27 @@ void serverExec(char *buf,int clientSocket){
 
     char lines[BUFFER_SIZE][BUFFER_SIZE];
     memset(lines,0,BUFFER_SIZE*BUFFER_SIZE);
-    
+    printf("aq ne !");
      while (token != NULL)
     {
 
-        //ver se deu certo isso valor de lines
+        // antes de copiar tratar o barra n
+        /*
+        for(size_t j=0;j< strlen(token);j++){
+            //printf("token da rodada : %s\n ",token);
+            
+            if( token[j],"\\"){
+
+                j= j+=3;
+                printf("se chegou sucesso !");
+
+            }
+            
+        }
+        */
+
         strcpy(lines[contLines], token);
+        printf("every token : %s\n",token);
         contLines ++;
         token = strtok(NULL, "\n");
 
@@ -332,6 +347,7 @@ void serverExec(char *buf,int clientSocket){
 
 
     // loop para iterar entre comandos
+    printf("contagem de linhas : %d ",contLines);
     for(i=0;i<contLines;i++){
 
         
@@ -342,6 +358,7 @@ void serverExec(char *buf,int clientSocket){
         int numOfTokens =0;
         //int cont=0;
        // printf("Lines[0] depois do strtok? %s\n", lines[0]);
+        
         
         
         while(tok != NULL){
@@ -356,7 +373,7 @@ void serverExec(char *buf,int clientSocket){
 
         //TRATAMENTO DO PRIMEIRO TOKEN SE EH UM DOS 4 COMANDOS PERMITIDOS
         
-        if (numOfTokens > 1 && numOfTokens <= 3){
+        if (numOfTokens > 1){
 
 
             location.x=atoi(line[1]);
@@ -380,12 +397,12 @@ void serverExec(char *buf,int clientSocket){
         //se o comando so tem 1 palavra eh pq eh list
         listLocations(clientSocket);
        }
-
+        /*
        else{
            //comando invalido
            sendMessageToClient(clientSocket,"Invalid command");
        }
-
+        */
        
                 
 
